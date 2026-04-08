@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+
+<!-- Copyright (c) 2026 Josh Davidson (Octal450) -->
+
+<fdm_config name="MD-12" version="2.0" release="BETA">
+	
+	<fileheader>
+		<author>Josh Davidson (Octal450)</author>
+		<description>MD-12 FDE with CF6-80C2D1F Engines (Fictional)</description>
+	</fileheader>
+	
+	<aerodynamics file="FDE/Config/md-12-aerodynamics.xml"/>
+	<external_reactions file="FDE/Config/md-12-external-reactions"/>
+	<ground_reactions file="FDE/Config/md-12-ground-reactions"/>
+	<mass_balance file="FDE/Config/md-12-mass-balance"/>
+	<metrics file="FDE/Config/md-12-metrics"/>
+	
+	<system file="md-12-core"/>
+	<system file="md-12-fcc"/>
+	<system file="md-12-fcs"/>
+	<system file="md-12-spoilers"/>
+	<system file="md-12-engine-fadec"/>
+	<system file="md-12-cockpit"/>
+	<system file="md-12-instrumentation"/>
+	
+	<propulsion>
+		<engine file="cf6-80c2d1f_1">
+			<feed>0</feed>
+			<thruster file="direct">
+				<location unit="M">
+					<x>0.56655</x>
+					<y>-10.01915</y>
+					<z>5.31353</z>
+				</location>
+				<orient unit="DEG">
+					<roll>0</roll>
+					<pitch>2</pitch>
+					<yaw>2</yaw>
+				</orient>
+			</thruster>
+		</engine>
+		
+		<engine file="cf6-80c2d1f_2">
+			<feed>0</feed>
+			<thruster file="direct">
+				<location unit="M">
+					<x>-5.95525</x>
+					<y>-5.7704</y>
+					<z>4.68165</z>
+				</location>
+				<orient unit="DEG">
+					<roll>0</roll>
+					<pitch>2</pitch>
+					<yaw>2</yaw>
+				</orient>
+			</thruster>
+		</engine>
+		
+		<engine file="cf6-80c2d1f_3">
+			<feed>0</feed>
+			<thruster file="direct">
+				<location unit="M">
+					<x>-5.95525</x>
+					<y>5.7704</y>
+					<z>4.68165</z>
+				</location>
+				<orient unit="DEG">
+					<roll>0</roll>
+					<pitch>2</pitch>
+					<yaw>-2</yaw>
+				</orient>
+			</thruster>
+		</engine>
+		
+		<engine file="cf6-80c2d1f_4">
+			<feed>0</feed>
+			<thruster file="direct">
+				<location unit="M">
+					<x>0.56655</x>
+					<y>10.01915</y>
+					<z>5.31353</z>
+				</location>
+				<orient unit="DEG">
+					<roll>0</roll>
+					<pitch>2</pitch>
+					<yaw>-2</yaw>
+				</orient>
+			</thruster>
+		</engine>
+		
+		<tank type="FUEL">
+			<location unit="M">
+				<x>1.43859</x>
+				<y>0</y>
+				<z>5.69282</z>
+			</location>
+			<capacity unit="LBS">256000</capacity>
+			<contents unit="LBS">60000</contents>
+			<standpipe unit="LBS">31</standpipe>
+			<priority>1</priority>
+			<type>JET-A1</type>
+			<temperature>50</temperature>
+		</tank>
+	</propulsion>
+
+</fdm_config>

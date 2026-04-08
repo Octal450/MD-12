@@ -1,0 +1,197 @@
+<?xml version="1.0"?>
+
+<!-- McDonnell Douglas MD-12 FCC -->
+<!-- Copyright (c) 2026 Josh Davidson (Octal450) -->
+
+<system name="MD-12: FCC">
+	
+	<!-- Properties for tuning -->
+	<property value="0">/systems/fcc/pitch/p-gain-tune</property>
+	<property value="0">/systems/fcc/roll/p-gain-tune</property>
+	<property value="0">/systems/fcc/yaw/yd-p-gain-tune</property>
+	<property value="0">/systems/fcc/yaw/tc-p-gain-tune</property>
+	<property value="0">/systems/fcc/yaw/tc-d-gain-tune</property>
+	
+	<channel name="Core">
+		
+		<switch name="/systems/fcc/afs/enabled">
+			<default value="0"/>
+			<test logic="OR" value="1">
+				/it-autoflight/output/ap1 eq 1
+				/it-autoflight/output/ap2 eq 1
+			</test>
+		</switch>
+		
+		<fcs_function name="/systems/fcc/stall-alpha-deg">
+			<function>
+				<table>
+					<independentVar lookup="row">velocities/mach</independentVar>
+					<independentVar lookup="column">fcs/slat-pos-deg</independentVar>
+					<tableData>
+						     0     31
+						0.2  12.7  14.8
+						0.9   8.5  10.7
+					</tableData>
+				</table>
+			</function>
+			<output>/it-autoflight/settings/stall-aoa-deg</output>
+		</fcs_function>
+		
+		<pure_gain name="/systems/fcc/stall-warn-alpha-deg">
+			<input>/systems/fcc/stall-alpha-deg</input>
+			<gain>0.8</gain> <!-- 80% -->
+		</pure_gain>
+		
+		<switch name="/systems/fcc/yaw/active">
+			<default value="1"/>
+			<test logic="OR" value="0">
+				position/wow eq 1
+				position/gear-agl-ft lt 50
+			</test>
+		</switch>
+	
+	</channel>
+	
+	<channel name="Gains">
+		
+		<fcs_function name="/systems/fcc/yaw/yd-p-gain">
+			<function>
+				<product>
+					<table>
+						<independentVar lookup="row">velocities/vc-kts</independentVar>
+						<tableData>
+							140 -7.5
+							360 -1.0
+						</tableData>
+					</table>
+					<!--property>/systems/fcc/yaw/yd-p-gain-tune</property--> <!-- For tuning -->
+					<property>/systems/fcc/yaw/active</property>
+				</product>
+			</function>
+		</fcs_function>
+		
+		<fcs_function name="/systems/fcc/yaw/tc-p-gain">
+			<function>
+				<product>
+					<table>
+						<independentVar lookup="row">velocities/vc-kts</independentVar>
+						<tableData>
+							140  1.5
+							360  0.5
+						</tableData>
+					</table>
+					<!--property>/systems/fcc/yaw/tc-p-gain-tune</property--> <!-- For tuning -->
+					<property>/systems/fcc/yaw/active</property>
+				</product>
+			</function>
+		</fcs_function>
+		
+		<fcs_function name="/systems/fcc/yaw/tc-d-gain">
+			<function>
+				<product>
+					<table>
+						<independentVar lookup="row">velocities/vc-kts</independentVar>
+						<tableData>
+							140  3
+							360  1
+						</tableData>
+					</table>
+					<!--property>/systems/fcc/yaw/tc-d-gain-tune</property--> <!-- For tuning -->
+					<property>/systems/fcc/yaw/active</property>
+				</product>
+			</function>
+		</fcs_function>
+	
+	</channel>
+	
+	<channel name="FCC: Elevator Feel">
+		
+		<fcs_function name="/systems/fcc/elevator-gain">
+			<function>
+				<table>
+					<independentVar lookup="row">velocities/vc-kts</independentVar>
+					<tableData>
+						160  1.0
+						320  0.7
+					</tableData>
+				</table>
+			</function>
+		</fcs_function>
+		
+		<pure_gain name="/systems/fcc/elevator-output">
+			<input>/controls/flight/elevator</input>
+			<gain>/systems/fcc/elevator-gain</gain>
+		</pure_gain>
+	
+	</channel>
+	
+	<channel name="FCC: Yaw Axis">
+		
+		<switch name="/systems/fcc/yaw/parallel-rudder-active">
+			<default value="0"/>
+			<test logic="AND" value="1">
+				/systems/fcc/afs/enabled eq 1
+				/it-autoflight/output/lat eq 4
+			</test>
+		</switch>
+		
+		<washout_filter name="/systems/fcc/yaw/r-washout">
+			<input>velocities/r-rad_sec</input>
+			<c1>0.5</c1>
+		</washout_filter>
+		
+		<switch name="/systems/fcc/yaw/r-switched">
+			<default value="/systems/fcc/yaw/r-washout"/>
+			<test value="0">
+				/systems/fcc/yaw/active ne 1
+			</test>
+		</switch>
+		
+		<pure_gain name="/systems/fcc/yaw/yd-f">
+			<input>/systems/fcc/yaw/r-switched</input>
+			<gain>/systems/fcc/yaw/yd-p-gain</gain>
+			<clipto>
+				<min>-0.5</min>
+				<max>0.5</max>
+			</clipto>
+		</pure_gain>
+		
+		<switch name="/systems/fcc/yaw/slip-skid-switched">
+			<default value="aero/beta-rad"/>
+			<test value="0">
+				position/wow eq 1
+			</test>
+		</switch>
+		
+		<lag_filter name="/systems/fcc/yaw/slip-skid">
+			<input>/systems/fcc/yaw/slip-skid-switched</input>
+			<c1>2.5</c1>
+		</lag_filter>
+		
+		<pid name="/systems/fcc/yaw/tc-pd">
+			<input>/systems/fcc/yaw/slip-skid</input>
+			<kp>/systems/fcc/yaw/tc-p-gain</kp>
+			<ki>0.0</ki>
+			<kd>/systems/fcc/yaw/tc-d-gain</kd>
+			<clipto>
+				<min>-0.2</min>
+				<max>0.2</max>
+			</clipto>
+		</pid>
+		
+		<switch name="/systems/fcc/yaw/tc-pd-s">
+			<default value="/systems/fcc/yaw/tc-pd"/>
+			<test logic="OR" value="0">
+				/systems/fcc/yaw/active ne 1
+				/systems/fcc/yaw/parallel-rudder-active eq 1
+			</test>
+		</switch>
+		
+		<summer name="/systems/fcc/yaw/output-sum">
+			<input>/systems/fcc/yaw/yd-f</input>
+			<input>/systems/fcc/yaw/tc-pd-s</input>
+		</summer>
+	
+	</channel>
+
+</system>

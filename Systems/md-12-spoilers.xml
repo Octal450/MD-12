@@ -1,0 +1,303 @@
+<?xml version="1.0"?>
+
+<!-- McDonnell Douglas MD-12 Spoilers -->
+<!-- Copyright (c) 2026 Josh Davidson (Octal450) -->
+
+<system name="MD-12: Spoilers">
+	
+	<channel name="Spoiler Lever and Logic">
+		
+		<fcs_function name="/controls/flight/speedbrake-fixed"> <!-- Rounds to 4 figures to fix a potential problem -->
+			<function>
+				<quotient>
+					<floor>
+						<sum>
+							<product>
+								<property>/controls/flight/speedbrake</property>
+								<value>10000</value>
+							</product>
+							<value>0.5</value> <!-- Make it round correctly -->
+						</sum>
+					</floor>
+					<value>10000</value>
+				</quotient>
+			</function>
+		</fcs_function>
+		
+		<switch name="/systems/fcs/spoilers/max-lever">
+			<default value="3"/>
+			<test value="4">
+				/systems/fcs/spoilers/main-gear-or eq 1
+			</test>
+		</switch>
+		
+		<switch name="/systems/fcs/spoilers/lever-input">
+			<default value="0"/>
+			<test logic="AND" value="1">
+				/controls/flight/speedbrake-fixed ge 0.2
+				/controls/flight/speedbrake-fixed lt 0.4
+			</test>
+			<test logic="AND" value="2">
+				/controls/flight/speedbrake-fixed ge 0.4
+				/controls/flight/speedbrake-fixed lt 0.6
+			</test>
+			<test logic="AND" value="3">
+				/controls/flight/speedbrake-fixed ge 0.6
+				/controls/flight/speedbrake-fixed lt 0.8
+			</test>
+			<test value="4">
+				/controls/flight/speedbrake-fixed ge 0.8
+			</test>
+			<clipto>
+				<min>0</min>
+				<max>/systems/fcs/spoilers/max-lever</max>
+			</clipto>
+		</switch>
+		
+		<switch name="/systems/fcs/spoilers/main-gear-or">
+			<default value="0"/>
+			<test logic="OR" value="1">
+				gear/unit[1]/WOW eq 1
+				gear/unit[2]/WOW eq 1
+			</test>
+		</switch>
+		
+		<switch name="/systems/fcs/spoilers/lever-cmd">
+			<default value="/systems/fcs/spoilers/lever-input"/>
+		</switch>
+		
+		<fcs_function name="/systems/fcs/spoilers/aileron-input">
+			<function>
+				<table>
+					<independentVar lookup="row">/systems/fcs/aileron-input-sum</independentVar>
+					<tableData>
+						-1.00 -1
+						-0.01  0
+						 0.01  0
+						 1.00  1
+					</tableData>
+				</table>
+			</function>
+		</fcs_function>
+		
+		<fcs_function name="/systems/fcs/spoilers/aileron">
+			<function>
+				<product>
+					<pow>
+						<abs><property>/systems/fcs/spoilers/aileron-input</property></abs>
+						<value>1.75</value>
+					</pow>
+					<ifthen>
+						<lt>
+							<property>/systems/fcs/spoilers/aileron-input</property>
+							<value>0</value>
+						</lt>
+						<value>-1</value>
+						<value>1</value>
+					</ifthen>
+				</product>
+			</function>
+		</fcs_function>
+		
+		<pure_gain name="/systems/fcs/spoilers/aileron-left">
+			<input>/systems/fcs/spoilers/aileron</input>
+			<gain>1.0</gain>
+			<clipto>
+				<min>-1.0</min>
+				<max>0.0</max>
+			</clipto>
+		</pure_gain>
+		
+		<pure_gain name="/systems/fcs/spoilers/aileron-right">
+			<input>/systems/fcs/spoilers/aileron</input>
+			<gain>1.0</gain>
+			<clipto>
+				<min>0.0</min>
+				<max>1.0</max>
+			</clipto>
+		</pure_gain>
+		
+		<switch name="/systems/fcs/spoilers/main-cmd-deg">
+			<default value="0"/>
+			<test value="10">
+				/systems/fcs/spoilers/lever-cmd eq 1
+			</test>
+			<test value="20">
+				/systems/fcs/spoilers/lever-cmd eq 2
+			</test>
+			<test value="30">
+				/systems/fcs/spoilers/lever-cmd eq 3
+			</test>
+			<test value="60">
+				/systems/fcs/spoilers/lever-cmd eq 4
+			</test>
+			<output>/systems/abs/spoilers-cmd-deg</output>
+		</switch>
+		
+		<aerosurface_scale name="/systems/fcs/spoilers/main-cmd">
+			<input>/systems/fcs/spoilers/main-cmd-deg</input>
+			<domain>
+				<min>0</min>
+				<max>60</max>
+			</domain>
+			<range>
+				<min>0.0</min>
+				<max>1.0</max>
+			</range>
+		</aerosurface_scale>
+		
+		<fcs_function name="/systems/fcs/spoilers/main-left-cmd"> <!-- So it retracts but only when needed -->
+			<function>
+				<min>
+					<property>/systems/fcs/spoilers/main-cmd</property>
+					<difference>
+						<value>1</value>
+						<property>/systems/fcs/spoilers/aileron-right</property>
+					</difference>
+				</min>
+			</function>
+		</fcs_function>
+		
+		<fcs_function name="/systems/fcs/spoilers/main-right-cmd"> <!-- So it retracts but only when needed -->
+			<function>
+				<min>
+					<property>/systems/fcs/spoilers/main-cmd</property>
+					<sum>
+						<value>1</value>
+						<property>/systems/fcs/spoilers/aileron-left</property>
+					</sum>
+				</min>
+			</function>
+		</fcs_function>
+	
+	</channel>
+	
+	<channel name="Spoiler Left Outer">
+		
+		<summer name="/systems/fcs/spoiler-l1/sum">
+			<input>-/systems/fcs/spoilers/aileron-left</input>
+			<input>/systems/fcs/spoilers/main-left-cmd</input>
+			<clipto>
+				<min>0.0</min>
+				<max>1.0</max>
+			</clipto>
+		</summer>
+		
+		<pure_gain name="/systems/fcs/spoiler-l1/cmd-deg">
+			<input>/systems/fcs/spoiler-l1/sum</input>
+			<gain>60</gain>
+		</pure_gain>
+		
+		<actuator name="/systems/fcs/spoiler-l1/final-actuator">
+			<input>/systems/fcs/spoiler-l1/cmd-deg</input>
+			<rate_limit>40</rate_limit>
+			<lag>26.5</lag>
+			<output>/systems/fcs/spoiler-l1/final-deg</output>
+		</actuator>
+	
+	</channel>
+	
+	<channel name="Spoiler Left Inner">
+		
+		<pure_gain name="/systems/fcs/spoiler-l2/cmd-deg">
+			<input>/systems/fcs/spoilers/main-cmd</input>
+			<gain>60</gain>
+		</pure_gain>
+		
+		<actuator name="/systems/fcs/spoiler-l2/final-actuator">
+			<input>/systems/fcs/spoiler-l2/cmd-deg</input>
+			<rate_limit>40</rate_limit>
+			<lag>26.5</lag>
+			<output>/systems/fcs/spoiler-l2/final-deg</output>
+		</actuator>
+	
+	</channel>
+	
+	<channel name="Spoiler Right Outer">
+		
+		<summer name="/systems/fcs/spoiler-r1/sum">
+			<input>/systems/fcs/spoilers/aileron-right</input>
+			<input>/systems/fcs/spoilers/main-right-cmd</input>
+			<clipto>
+				<min>0.0</min>
+				<max>1.0</max>
+			</clipto>
+		</summer>
+		
+		<pure_gain name="/systems/fcs/spoiler-r1/cmd-deg">
+			<input>/systems/fcs/spoiler-r1/sum</input>
+			<gain>60</gain>
+		</pure_gain>
+		
+		<actuator name="/systems/fcs/spoiler-r1/final-actuator">
+			<input>/systems/fcs/spoiler-r1/cmd-deg</input>
+			<rate_limit>40</rate_limit>
+			<lag>26.5</lag>
+			<output>/systems/fcs/spoiler-r1/final-deg</output>
+		</actuator>
+	
+	</channel>
+	
+	<channel name="Spoiler Right Inner">
+		
+		<pure_gain name="/systems/fcs/spoiler-r2/cmd-deg">
+			<input>/systems/fcs/spoilers/main-cmd</input>
+			<gain>60</gain>
+		</pure_gain>
+		
+		<actuator name="/systems/fcs/spoiler-r2/final-actuator">
+			<input>/systems/fcs/spoiler-r2/cmd-deg</input>
+			<rate_limit>40</rate_limit>
+			<lag>26.5</lag>
+			<output>/systems/fcs/spoiler-r2/final-deg</output>
+		</actuator>
+	
+	</channel>
+	
+	<channel name="Output">
+		
+		<summer name="/systems/fcs/spoiler-left-sum">
+			<input>/systems/fcs/spoiler-l1/final-actuator</input>
+			<input>/systems/fcs/spoiler-l2/final-actuator</input>
+		</summer>
+		
+		<fcs_function name="/systems/fcs/spoiler-left-deg">
+			<function>
+				<quotient>
+					<property>/systems/fcs/spoiler-left-sum</property>
+					<value>2</value>
+				</quotient>
+			</function>
+			<output>/systems/fcc/spoiler-left-feedback</output>
+		</fcs_function>
+		
+		<summer name="/systems/fcs/spoiler-right-sum">
+			<input>/systems/fcs/spoiler-r1/final-actuator</input>
+			<input>/systems/fcs/spoiler-r2/final-actuator</input>
+		</summer>
+		
+		<fcs_function name="/systems/fcs/spoiler-right-deg">
+			<function>
+				<quotient>
+					<property>/systems/fcs/spoiler-right-sum</property>
+					<value>2</value>
+				</quotient>
+			</function>
+			<output>/systems/fcc/spoiler-right-feedback</output>
+		</fcs_function>
+		
+		<fcs_function name="/systems/fcs/spoiler-symmetrical-deg">
+			<function>
+				<quotient>
+					<min>
+						<property>/systems/fcs/spoiler-left-sum</property>
+						<property>/systems/fcs/spoiler-right-sum</property>
+					</min>
+					<value>2</value>
+				</quotient>
+			</function>
+		</fcs_function>
+	
+	</channel>
+
+</system>

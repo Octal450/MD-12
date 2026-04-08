@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<!-- McDonnell Douglas MD-12 Instrumentation -->
+<!-- Copyright (c) 2026 Josh Davidson (Octal450) -->
+
+<system name="MD-12: Instrumentation">
+	
+	<channel name="Primary Flight Displays" execrate="2">
+		
+		<summer name="/instrumentation/pfd/pli-alpha-error">
+			<input>aero/alpha-deg-damped</input>
+			<input>-/systems/fcc/stall-alpha-deg</input>
+		</summer>
+		
+		<pure_gain name="/instrumentation/pfd/pli-deg">
+			<input>/instrumentation/pfd/pli-alpha-error</input>
+			<gain>-1.0</gain>
+			<clipto>
+				<min>-20</min>
+				<max>20</max>
+			</clipto>
+		</pure_gain>
+		
+		<switch name="/instrumentation/pfd/pli-red">
+			<default value="0"/>
+			<test value="1">
+				aero/alpha-deg-damped ge /systems/fcc/stall-alpha-deg
+			</test>
+		</switch>
+	
+	</channel>
+
+</system>

@@ -1,0 +1,170 @@
+<?xml version="1.0"?>
+
+<!-- Copyright (c) 2026 Josh Davidson (Octal450) -->
+
+<PropertyList>
+	
+	<path>cockpit.ac</path>
+	
+	<model>
+		<path>Aircraft/MD-12/Models/Cockpit/yokes.xml</path>
+		<offsets>
+			<x-m>-3.97874</x-m>
+			<y-m>0.0</y-m>
+			<z-m>-8.34704</z-m>
+		</offsets>
+	</model>
+	
+	<model>
+		<path>Aircraft/MD-12/Models/Cockpit/pedals.xml</path>
+		<offsets>
+			<x-m>-3.96313</x-m>
+			<y-m>0.0</y-m>
+			<z-m>-8.34773</z-m>
+		</offsets>
+	</model>
+	
+	<!-- Display Frames -->
+	<model>
+		<name>Frame_DU_1</name>
+		<path>screenframe.ac</path>
+		<offsets>
+			<x-m>-31.54285</x-m>
+			<y-m>-0.537</y-m>
+			<z-m>-1.39585</z-m>
+			<pitch-deg>-8.5</pitch-deg>
+		</offsets>
+	</model>
+	<model>
+		<name>Frame_DU_2</name>
+		<path>screenframe.ac</path>
+		<offsets>
+			<x-m>-31.54285</x-m>
+			<y-m>-0.33</y-m>
+			<z-m>-1.39585</z-m>
+			<pitch-deg>-8.5</pitch-deg>
+		</offsets>
+	</model>
+	<model>
+		<name>Frame_DU_3</name>
+		<path>screenframe.ac</path>
+		<offsets>
+			<x-m>-31.54285</x-m>
+			<y-m>-0.123</y-m>
+			<z-m>-1.39585</z-m>
+			<pitch-deg>-8.5</pitch-deg>
+		</offsets>
+	</model>
+	<model>
+		<name>Frame_DU_4</name>
+		<path>screenframe.ac</path>
+		<offsets>
+			<x-m>-31.54285</x-m>
+			<y-m>0.123</y-m>
+			<z-m>-1.39585</z-m>
+			<pitch-deg>-8.5</pitch-deg>
+		</offsets>
+	</model>
+	<model>
+		<name>Frame_DU_5</name>
+		<path>screenframe.ac</path>
+		<offsets>
+			<x-m>-31.54285</x-m>
+			<y-m>0.33</y-m>
+			<z-m>-1.39585</z-m>
+			<pitch-deg>-8.5</pitch-deg>
+		</offsets>
+	</model>
+	<model>
+		<name>Frame_DU_6</name>
+		<path>screenframe.ac</path>
+		<offsets>
+			<x-m>-31.54285</x-m>
+			<y-m>0.537</y-m>
+			<z-m>-1.39585</z-m>
+			<pitch-deg>-8.5</pitch-deg>
+		</offsets>
+	</model>
+	
+	<!-- PFD -->
+    <model>
+        <name>PFD1</name>
+        <path>Aircraft/MD-12/Models/Instruments/PFD/PFD1.xml</path>
+        <offsets>
+			<x-m>-31.54285</x-m>
+			<y-m>-0.537</y-m>
+			<z-m>-1.39585</z-m>
+			<pitch-deg>-8.5</pitch-deg>
+        </offsets>
+    </model>
+
+    <model>
+        <name>PFD2</name>
+        <path>Aircraft/MD-12/Models/Instruments/PFD/PFD2.xml</path>
+        <offsets>
+			<x-m>-31.54285</x-m>
+			<y-m>0.537</y-m>
+			<z-m>-1.39585</z-m>
+			<pitch-deg>-8.5</pitch-deg>
+        </offsets>
+    </model>
+	
+	<!-- ND -->
+	<model>
+		<name>ND1</name>
+        <path>Aircraft/MD-12/Models/Instruments/ND/ND_L.xml</path>
+		<offsets>
+			<x-m>-31.54285</x-m>
+			<y-m>-0.33</y-m>
+			<z-m>-1.39585</z-m>
+			<pitch-deg>-8.5</pitch-deg>
+		</offsets>
+	</model>
+	
+	<model>
+		<name>ND2</name>
+        <path>Aircraft/MD-12/Models/Instruments/ND/ND_R.xml</path>
+		<offsets>
+			<x-m>-31.54285</x-m>
+			<y-m>0.33</y-m>
+			<z-m>-1.39585</z-m>
+			<pitch-deg>-8.5</pitch-deg>
+		</offsets>
+	</model>
+	
+	<!-- EAD/SD -->
+	<model>
+		<name>EAD</name>
+        <path>Aircraft/MD-12/Models/Instruments/EAD/EAD.xml</path>
+		<offsets>
+			<x-m>-31.54285</x-m>
+			<y-m>-0.123</y-m>
+			<z-m>-1.39585</z-m>
+			<pitch-deg>-8.5</pitch-deg>
+		</offsets>
+	</model>
+	
+    <model>
+        <name>EAD2</name>
+        <path>Aircraft/MD-12/Models/Instruments/EAD/EAD.xml</path>
+        <offsets>
+			<x-m>-31.54285</x-m>
+			<y-m>0.123</y-m>
+			<z-m>-1.39585</z-m>
+			<pitch-deg>-8.5</pitch-deg>
+        </offsets>
+    </model>
+	
+	<!-- MCP -->
+    <model>
+        <name>MCP</name>
+        <path>Aircraft/MD-12/Models/Instruments/MCP/MCP.xml</path>
+        <offsets>
+			<x-m>-31.4268</x-m>
+			<y-m>0</y-m>
+			<z-m>-1.18553</z-m>
+			<pitch-deg>-15.46</pitch-deg>
+        </offsets>
+    </model>
+
+</PropertyList>

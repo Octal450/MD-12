@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+
+<!-- McDonnell Douglas MD-12 Cockpit -->
+<!-- Copyright (c) 2026 Josh Davidson (Octal450) -->
+
+<system name="MD-12: Cockpit"> <!-- Everything here is after all systems -->
+	
+	<channel name="Animations">
+		
+		<!-- General -->
+		<lag_filter name="/controls/cockpit/aileron-yoke">
+			<input>/systems/fcs/aileron-input-sum</input>
+			<c1>20</c1>
+		</lag_filter>
+		
+		<lag_filter name="/controls/cockpit/brake-pedal-left">
+			<input>/controls/gear/brake-left</input>
+			<c1>5</c1>
+		</lag_filter>
+		
+		<lag_filter name="/controls/cockpit/brake-pedal-right">
+			<input>/controls/gear/brake-right</input>
+			<c1>5</c1>
+		</lag_filter>
+		
+		<lag_filter name="/controls/cockpit/elevator-yoke">
+			<input>/controls/flight/elevator</input>
+			<c1>20</c1>
+		</lag_filter>
+		
+		<lag_filter name="/controls/cockpit/rudder-pedal">
+			<input>/systems/fcs/rudder-input-sum</input>
+			<c1>20</c1>
+		</lag_filter>
+	
+	</channel>
+	
+	<channel name="Glass Effects">
+		
+		<fcs_function name="glass-effects/airspeed-clamped-sqrt">
+			<function>
+				<sqrt>
+					<quotient>
+						<min>
+							<property>velocities/vc-kts</property>
+							<value>40</value>
+						</min>
+						<value>40</value>
+					</quotient>
+				</sqrt>
+			</function>
+		</fcs_function>
+		
+		<fcs_function name="glass-effects/splash-x">
+			<function>
+				<difference>
+					<value>-0.1</value>
+					<product>
+						<value>2</value>
+						<property>glass-effects/airspeed-clamped-sqrt</property>
+					</product>
+				</difference>
+			</function>
+			<output>/environment/aircraft-effects/splash-vector-x</output>
+		</fcs_function>
+		
+		<fcs_function name="glass-effects/splash-y">
+			<function>
+				<value>0</value>
+			</function>
+			<output>/environment/aircraft-effects/splash-vector-y</output>
+		</fcs_function>
+		
+		<fcs_function name="glass-effects/splash-z">
+			<function>
+				<difference>
+					<value>1</value>
+					<product>
+						<value>1.35</value>
+						<property>glass-effects/airspeed-clamped-sqrt</property>
+					</product>
+				</difference>
+			</function>
+			<output>/environment/aircraft-effects/splash-vector-z</output>
+		</fcs_function>
+	
+	</channel>
+
+</system>

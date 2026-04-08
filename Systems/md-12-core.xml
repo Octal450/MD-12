@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+
+<!-- McDonnell Douglas MD-12 JSBSim Core -->
+<!-- Copyright (c) 2026 Josh Davidson (Octal450) -->
+
+<system name="MD-12: Core">
+	
+	<channel name="FDM Rate">
+		
+		<switch name="position/wow">
+			<default value="0"/>
+			<test logic="OR" value="1">
+				gear/unit[0]/WOW eq 1
+				gear/unit[1]/WOW eq 1
+				gear/unit[2]/WOW eq 1
+				gear/unit[3]/WOW eq 1
+				gear/unit[4]/WOW eq 1
+			</test>
+			<output>/position/wow</output> <!-- Copy to local tree -->
+		</switch>
+		
+		<switch name="position/wow-fwd">
+			<default value="0"/>
+			<test logic="OR" value="1">
+				gear/unit[0]/WOW eq 1
+				gear/unit[1]/WOW eq 1
+				gear/unit[2]/WOW eq 1
+			</test>
+			<output>/position/wow-fwd</output> <!-- Copy to local tree -->
+		</switch>
+		
+		<switch name="position/gear-down-wow">
+			<default value="/controls/gear/gear-down"/>
+			<test value="1">
+				position/wow eq 1
+			</test>
+			<output>/controls/gear/gear-down</output>
+		</switch>
+		
+		<switch name="aero/alpha-deg-fixed">
+			<default value="0"/>
+			<test value="aero/alpha-deg">
+				gear/unit[0]/WOW eq 0
+			</test>
+		</switch>
+		
+		<lag_filter name="aero/alpha-deg-damped">
+			<input>aero/alpha-deg-fixed</input>
+			<c1>10</c1>
+		</lag_filter>
+		
+		<fcs_function name="position/gear-agl">
+			<function>
+				<difference>
+					<property>/position/altitude-agl-ft</property>
+					<value>17.8</value>
+				</difference>
+			</function>
+		</fcs_function>
+		
+		<lag_filter name="position/gear-agl-ft">
+			<input>position/gear-agl</input>
+			<c1>20</c1>
+			<output>/position/gear-agl-ft</output> <!-- So flight recorder can override it -->
+		</lag_filter>
+	
+	</channel>
+
+</system>
