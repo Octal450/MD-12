@@ -1339,7 +1339,7 @@
 		<axis-alignment>yz-plane</axis-alignment>
 		<type>number-value</type>
 		<format>%4.0f</format>
-		<property>controls/switches/minimums-ra</property>
+		<property>instrumentation/efis[0]/minimums</property>
 		<font>helvetica_bold.txf</font>
 		<character-size>0.006</character-size>
 		<character-aspect-ratio>1.2</character-aspect-ratio>
@@ -1360,7 +1360,7 @@
 		<axis-alignment>yz-plane</axis-alignment>
 		<type>number-value</type>
 		<format>%4.0f</format>
-		<property>controls/switches/minimums-ra</property>
+		<property>instrumentation/efis[0]/minimums</property>
 		<font>helvetica_bold.txf</font>
 		<character-size>0.006</character-size>
 		<character-aspect-ratio>1.2</character-aspect-ratio>
@@ -1398,12 +1398,12 @@
 		<condition>
 			<or>
 				<equals>
-					<property>controls/switches/minimums-ra</property>
+					<property>instrumentation/efis[0]/minimums</property>
 					<value>0</value>
 				</equals>
 				<greater-than>
 					<property>position/gear-agl-ft</property>
-					<property>controls/switches/minimums-ra</property>
+					<property>instrumentation/efis[0]/minimums</property>
 				</greater-than>
 			</or>
 		</condition>
@@ -1417,12 +1417,12 @@
 		<condition>
 			<and>
 				<greater-than>
-					<property>controls/switches/minimums-ra</property>
+					<property>instrumentation/efis[0]/minimums</property>
 					<value>0</value>
 				</greater-than>
 				<less-than-equals>
 					<property>position/gear-agl-ft</property>
-					<property>controls/switches/minimums-ra</property>
+					<property>instrumentation/efis[0]/minimums</property>
 				</less-than-equals>
 			</and>
 		</condition>
